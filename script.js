@@ -5,6 +5,9 @@ const products = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  const modeToggle = document.getElementById("toggle-mode");
+  modeToggle.addEventListener("click", toggleMode);
+    if (document.body.contains(document.querySelector("#total-amount"))) {
   const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   const totalAmountElement = document.getElementById("total-amount");
   const paypalAmountInput = document.getElementById("paypal-amount");
@@ -12,6 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   totalAmountElement.textContent = `$${total.toFixed(2)}`;
   paypalAmountInput.value = total.toFixed(2);
+  }
+
+  if (document.body.contains(document.querySelector(".product-grid"))) {
+    const productGrid = document.querySelector(".product-grid");
+    products.forEach((product) => {
+      const productBox = document.createElement("div");
+      productBox.className = "product-box";
+      productBox.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <h2>${product.name}</h2>
+        <button class="add-to-cart">Add to Cart</button>
+      `;
+      productGrid.appendChild(productBox);
+    });
+  }
 });
 
 function toggleMode() {
