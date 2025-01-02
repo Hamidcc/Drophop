@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pay with PayPal</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Checkout</h1>
+    <button id="toggle-mode">🌗</button>
+  </header>
+  <main>
+    <h2>Total: <span id="total-amount">$0.00</span></h2>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+      <!-- Required PayPal Variables -->
+      <input type="hidden" name="cmd" value="_xclick">
+      <input type="hidden" name="business" value="goofii2534@gmail.com"> <!-- Replace with your PayPal email -->
+      <input type="hidden" name="currency_code" value="USD">
+      <input type="hidden" name="item_name" value="Cart Purchase">
+      <input type="hidden" name="amount" id="paypal-amount" value="0.00"> <!-- Dynamic amount -->
+
+      <!-- Submit Button -->
+      <button type="submit" id="pay-now">Pay with PayPal</button>
+    </form>
+  </main>
+</body>
+</html>
