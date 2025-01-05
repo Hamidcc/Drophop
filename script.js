@@ -8,14 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const modeToggle = document.getElementById("toggle-mode");
   modeToggle.addEventListener("click", toggleMode);
 
-  if (document.body.contains(document.querySelector("#total-amount"))) {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const totalAmountElement = document.getElementById("total-amount");
-    const paypalAmountInput = document.getElementById("paypal-amount");
+  // Load cart data from localStorage and display total amount
+  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const totalAmountElement = document.getElementById("total-amount");
+  const paypalAmountInput = document.getElementById("paypal-amount");
 
-    updateTotalAmount(cartItems, totalAmountElement, paypalAmountInput);
-  }
+  updateTotalAmount(cartItems, totalAmountElement, paypalAmountInput);
 
+  // Render products in the product grid
   if (document.body.contains(document.querySelector(".product-grid"))) {
     const productGrid = document.querySelector(".product-grid");
     products.forEach((product) => {
@@ -67,4 +67,49 @@ function updateTotalAmount(cartItems, totalAmountElement, paypalAmountInput) {
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   totalAmountElement.textContent = `$${total.toFixed(2)}`;
   paypalAmountInput.value = total.toFixed(2);
+}
+
+function renderCart() {
+  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartContainer = document.getElementById("cart-items");
+  
+  cartContainer.innerHTML = ''; // Clear current cart display
+
+  cartItems.forEach(item => {
+    const cartItem = document.createElement("div");
+    cartItem.className = "cart-item";
+    cartItem.innerHTML = `
+      <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+      <div class="cart-item-details">
+        <h3>${item.name}</h3>
+        <p>Price: $${item.price}</p>
+        <p>Quantity: ${item.quantity}</p>
+        <button class="remove-from-cart" data-name="${item.name}">Remove</button>
+      </div>
+    `;
+    cartContainer.appendChild(cartItem);
+
+    // Add event listener for removing from the cart
+    const removeButton = cartItem.querySelector(".remove-from-cart");
+    removeButton.addEventListener("click", () => removeFromCart(item.name));
+  });
+}
+
+function removeFromCart(productName) {
+  let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  const updatedCart = cartItems.filter(item => item.name !== productName);
+
+  // Save the updated cart to localStorage
+  localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+  // Re-render the cart and update total
+  renderCart();
+  const totalAmountElement = document.getElementById("total-amount");
+  const paypalAmountInput = document.getElementById("paypal-amount");
+  updateTotalAmount(updatedCart, totalAmountElement, paypalAmountInput);
+}
+
+// Call renderCart when the page is loaded to show the current cart items
+if (document.body.contains(document.querySelector("#cart-items"))) {
+  renderCart();
 }
